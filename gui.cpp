@@ -111,6 +111,7 @@ void gui::CreateHWindow(const char* windowName) noexcept
             0,
             windowClass.hInstance,
             0
+
     );
 
     ShowWindow(window, SW_SHOWDEFAULT);
