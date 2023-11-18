@@ -31,6 +31,9 @@ long __stdcall WindowProcess(
                 gui::presentParameters.BackBufferWidth = LOWORD(longParameter);
                 gui::presentParameters.BackBufferHeight = HIWORD(longParameter);
                 gui::ResetDevice();
+
+                ImGuiIO& io = ImGui::GetIO();
+                io.DisplaySize = ImVec2(static_cast<float>(LOWORD(longParameter)), static_cast<float>(HIWORD(longParameter)));
             }
         }return 0;
 
@@ -99,7 +102,7 @@ void gui::CreateHWindow(const char* windowName) noexcept
             0,
             "class001",
             windowName,
-            WS_POPUP,
+            WS_POPUP | WS_THICKFRAME,
             100,
             100,
             WIDTH,
@@ -251,8 +254,10 @@ void gui::EndRender() noexcept
 
 
 void load(){
+    ImGui::SetNextItemWidth(ImGui::GetWindowWidth() - 60);
     ImGui::InputText("##", save::path, MAX_PATH);
     ImGui::SameLine();
+
     if(ImGui::Button("open")){
         save::selectFile();
     }
@@ -262,9 +267,8 @@ void load(){
     return;
 }
 
-void Android(){
-    ImGui::Text("Android");
 
+void Scenarios_Android(){
     static const char* items[5]{
             "Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5"
     };
@@ -273,30 +277,169 @@ void Android(){
     static int current_gs3 = (int)save::systemDataAndroid->sce_data.GS3_Scenario_enable / 16 - 1;
 
     static const float width = ImGui::GetWindowWidth();
-    static const float combo_width = width * 0.25f;
+    static const float combo_width = width / 3 - 10;
     ImGui::SetNextItemWidth(combo_width);
-    ImGui::Combo("##", &current_gs1, items, 5, -1);
-    ImGui::SetNextItemWidth(combo_width);
-    ImGui::SameLine();
-    ImGui::Combo("###", &current_gs2, items, 4, -1);
+    ImGui::Combo("##gs1", &current_gs1, items, 5, -1);
     ImGui::SetNextItemWidth(combo_width);
     ImGui::SameLine();
-    ImGui::Combo("Game progress", &current_gs3, items, 5, -1);
+    ImGui::Combo("##gs2", &current_gs2, items, 4, -1);
+    ImGui::SetNextItemWidth(combo_width);
+    ImGui::SameLine();
+    ImGui::Combo("##gs3", &current_gs3, items, 5, -1);
 
     save::systemDataAndroid->sce_data.GS1_Scenario_enable = (std::byte)((current_gs1 + 1) * 16);
     save::systemDataAndroid->sce_data.GS2_Scenario_enable = (std::byte)((current_gs2 + 1) * 16);
     save::systemDataAndroid->sce_data.GS3_Scenario_enable = (std::byte)((current_gs3 + 1) * 16);
 }
 
+void Android(){
+    static int tab = 0;
+
+
+    ImGui::Text("Android");
+    ImGui::SameLine();
+    if(ImGui::Button("Save")) save::SaveData();
+    ImGui::Separator();
+
+
+
+
+    if (ImGui::Button("Main")) {
+        tab = 0;
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Scenarios")) {
+        tab = 1;
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Options")) {
+        tab = 2;
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Saves")) {
+        tab = 3;
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Trophies")) {
+        tab = 4;
+    }
+    ImGui::Separator();
+
+    switch (tab) {
+        case 0:
+            ImGui::Text("Main");
+            // Add content specific to Tab 1 here
+
+            if(ImGui::Button("Save")) save::SaveData();
+            break;
+        case 1:
+            ImGui::Text("Scenario");
+            // Add content specific to Tab 2 here
+            Scenarios_Android();
+            break;
+        case 2:
+            ImGui::Text("Options");
+            break;
+
+        case 3:
+            ImGui::Text("Saves");
+            break;
+
+        case 4:
+            ImGui::Text("Trophies");
+            break;
+        default:
+            break;
+    }
+}
+
+
+void Scenarios(){
+    static const char* items[5]{
+            "Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5"
+    };
+    static int current_gs1 = (int)save::systemData->sce_data.GS1_Scenario_enable / 16 - 1; //sce_data is represented as 0x10 to 0x50 in 0x10 steps
+    static int current_gs2 = (int)save::systemData->sce_data.GS2_Scenario_enable / 16 - 1;
+    static int current_gs3 = (int)save::systemData->sce_data.GS3_Scenario_enable / 16 - 1;
+
+    static const float width = ImGui::GetWindowWidth();
+    static const float combo_width = width / 3 - 10;
+    ImGui::SetNextItemWidth(combo_width);
+    ImGui::Combo("##gs1", &current_gs1, items, 5, -1);
+    ImGui::SetNextItemWidth(combo_width);
+    ImGui::SameLine();
+    ImGui::Combo("##gs2", &current_gs2, items, 4, -1);
+    ImGui::SetNextItemWidth(combo_width);
+    ImGui::SameLine();
+    ImGui::Combo("##gs3", &current_gs3, items, 5, -1);
+
+    save::systemData->sce_data.GS1_Scenario_enable = (std::byte)((current_gs1 + 1) * 16);
+    save::systemData->sce_data.GS2_Scenario_enable = (std::byte)((current_gs2 + 1) * 16);
+    save::systemData->sce_data.GS3_Scenario_enable = (std::byte)((current_gs3 + 1) * 16);
+}
+
 void Steam(){
-
-
-
-
+    static int tab = 0;
 
 
     ImGui::Text("Steam");
+    ImGui::SameLine();
+    if(ImGui::Button("Save")) save::SaveData();
+    ImGui::Separator();
 
+
+
+
+    if (ImGui::Button("Main")) {
+        tab = 0;
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Scenarios")) {
+        tab = 1;
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Options")) {
+        tab = 2;
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Saves")) {
+        tab = 3;
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Trophies")) {
+        tab = 4;
+    }
+    ImGui::Separator();
+
+    switch (tab) {
+        case 0:
+            ImGui::Text("Main");
+            // Add content specific to Tab 1 here
+
+            if(ImGui::Button("Save")) save::SaveData();
+            break;
+        case 1:
+            ImGui::Text("Scenario");
+            // Add content specific to Tab 2 here
+            Scenarios();
+            break;
+        case 2:
+            ImGui::Text("Options");
+            break;
+
+        case 3:
+            ImGui::Text("Saves");
+            break;
+
+        case 4:
+            ImGui::Text("Trophies");
+            break;
+        default:
+            break;
+    }
+
+
+/*
     static const char* items[5]{
             "Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5"
     };
@@ -321,13 +464,16 @@ void Steam(){
 
     if(ImGui::Button("Save")) save::SaveData();
 
-
+*/
 }
 
 void gui::Render() noexcept
 {
-    ImGui::SetNextWindowPos({ 0, 0 });
-    ImGui::SetNextWindowSize({ WIDTH, HEIGHT });
+    ImGui::SetNextWindowPos({ 0, 0});
+    //ImGui::SetNextWindowSize({ WIDTH, HEIGHT });
+    static ImGuiIO& io = ImGui::GetIO();
+    //io.FontGlobalScale = 1.2f;
+    ImGui::SetNextWindowSize(io.DisplaySize);
     ImGui::Begin(
             "SaveEditor",
             &isRunning,

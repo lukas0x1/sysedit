@@ -1,8 +1,0 @@
-"C:\Program Files\JetBrains\CLion 2023.2.2\bin\cmake\win\x64\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Release "-DCMAKE_MAKE_PROGRAM=C:/Program Files/JetBrains/CLion 2023.2.2/bin/ninja/win/x64/ninja.exe" -G Ninja -S C:\Users\ciel\CLionProjects\saveeditor -B C:\Users\ciel\CLionProjects\saveeditor\cmake-build-release
--- Configuring done (0.3s)
--- Generating done (0.0s)
--- Build files have been written to: C:/Users/ciel/CLionProjects/saveeditor/cmake-build-release
-
-Problems were encountered while collecting compiler information:
-	cc1plus.exe: fatal error: /permissive-: No such file or directory
-	cc1plus.exe: fatal error: /Zc:strictStrings-: No such file or directory

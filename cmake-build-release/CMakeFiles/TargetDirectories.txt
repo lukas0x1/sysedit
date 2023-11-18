@@ -1,3 +1,0 @@
-C:/Users/ciel/CLionProjects/saveeditor/cmake-build-release/CMakeFiles/saveeditor.dir
-C:/Users/ciel/CLionProjects/saveeditor/cmake-build-release/CMakeFiles/edit_cache.dir
-C:/Users/ciel/CLionProjects/saveeditor/cmake-build-release/CMakeFiles/rebuild_cache.dir
