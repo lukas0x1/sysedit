@@ -1,0 +1,11 @@
+# ninja log v5
+43	3318	7218831657176749	CMakeFiles/saveeditor.dir/gui.cpp.obj	4d0c96a37440fcbf
+35	3504	7218831659276698	CMakeFiles/saveeditor.dir/include/imgui/backends/imgui_impl_dx9.cpp.obj	d051d4aed7eeadb3
+17	8177	7218831706037351	CMakeFiles/saveeditor.dir/include/imgui/imgui_draw.cpp.obj	b32019ec27f258bd
+23	9315	7218831717419731	CMakeFiles/saveeditor.dir/include/imgui/imgui_widgets.cpp.obj	ad03e9e064c2db94
+50	3622	7218831660436702	CMakeFiles/saveeditor.dir/include/imgui/backends/imgui_impl_win32.cpp.obj	c4bee36462aafaa3
+7	4567	7218831669899904	CMakeFiles/saveeditor.dir/main.cpp.obj	33ee1ef374f9ee85
+12	5925	7218831683508738	CMakeFiles/saveeditor.dir/include/imgui/imgui_tables.cpp.obj	fabf29b53cd2d7fe
+29	6769	7218831691955231	CMakeFiles/saveeditor.dir/include/imgui/imgui_demo.cpp.obj	5a4566038c6dce16
+1	15464	7218831778902604	CMakeFiles/saveeditor.dir/include/imgui/imgui.cpp.obj	f367c1c56495542a
+15464	15614	7218831780372613	saveeditor.exe	87f3680c938d04ba
