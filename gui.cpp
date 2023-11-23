@@ -268,14 +268,15 @@ void load(){
     return;
 }
 
-
-void Scenarios_Android(){
+void scenarios_android(){
     static const char* items[5]{
             "Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5"
     };
     static int current_gs1 = (int)save::systemDataAndroid->sce_data.GS1_Scenario_enable / 16 - 1; //sce_data is represented as 0x10 to 0x50 in 0x10 steps
     static int current_gs2 = (int)save::systemDataAndroid->sce_data.GS2_Scenario_enable / 16 - 1;
     static int current_gs3 = (int)save::systemDataAndroid->sce_data.GS3_Scenario_enable / 16 - 1;
+
+
 
     static const float width = ImGui::GetWindowWidth();
     static const float combo_width = width / 3 - 10;
@@ -293,69 +294,7 @@ void Scenarios_Android(){
     save::systemDataAndroid->sce_data.GS3_Scenario_enable = (std::byte)((current_gs3 + 1) * 16);
 }
 
-void Android(){
-    static int tab = 0;
-
-
-    ImGui::Text("Android");
-    ImGui::SameLine();
-    if(ImGui::Button("Save")) save::SaveData();
-    ImGui::Separator();
-
-
-
-
-    if (ImGui::Button("Main")) {
-        tab = 0;
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Scenarios")) {
-        tab = 1;
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Options")) {
-        tab = 2;
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Saves")) {
-        tab = 3;
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Trophies")) {
-        tab = 4;
-    }
-    ImGui::Separator();
-
-    switch (tab) {
-        case 0:
-            ImGui::Text("Main");
-            // Add content specific to Tab 1 here
-
-            if(ImGui::Button("Save")) save::SaveData();
-            break;
-        case 1:
-            ImGui::Text("Scenario");
-            // Add content specific to Tab 2 here
-            Scenarios_Android();
-            break;
-        case 2:
-            ImGui::Text("Options");
-            break;
-
-        case 3:
-            ImGui::Text("Saves");
-            break;
-
-        case 4:
-            ImGui::Text("Trophies");
-            break;
-        default:
-            break;
-    }
-}
-
-
-void Scenarios(){
+void scenarios_steam(){
     static const char* items[5]{
             "Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5"
     };
@@ -379,11 +318,54 @@ void Scenarios(){
     save::systemData->sce_data.GS3_Scenario_enable = (std::byte)((current_gs3 + 1) * 16);
 }
 
-void Steam(){
+void options_android(){
+    const char *languages[2] = {"Japanese", "English"};
+    ImGui::SliderInt("##volume", (int *)&save::systemData->option_work.bgm_value, 0, 4, "%u");
+    ImGui::SliderInt("##se_volume", (int *)&save::systemData->option_work.se_value, 0, 4);
+    ImGui::SliderInt("#transparency", (int *)&save::systemData->option_work.skip_type, 0, 3);
+    ImGui::Checkbox("##shake", (bool *)&save::systemData->option_work.shake_type);
+    ImGui::Checkbox("##vibration", (bool *)&save::systemData->option_work.vibe_type);
+    ImGui::SliderInt("#transparency", (int *)&save::systemData->option_work.window_type, 0, 3);
+    ImGui::Combo("##language", (int *)&save::systemData->option_work.language_type, languages, 2, -1);
+}
+
+
+void options_steam(){
+    const char *languages[7] = {"Japanese", "English", "French", "German", "Korean", "Chinese (Simplified)", "Chinese (Traditional)" };
+    static int bgm_value = save::systemData->option_work.bgm_value;
+    static int se_value = save::systemData->option_work.se_value;
+    static int skip_type = save::systemData->option_work.skip_type;
+    static int window_type = save::systemData->option_work.window_type;
+    static int resolution_h = save::systemData->option_work.resolution_h;
+    static int resolution_w = save::systemData->option_work.resolution_w;
+
+    for(int i = 0; i < 30; i++){
+        ImGui::Text("key %i: 0x%x", i, save::systemData->option_work.key_config[i]);
+    }
+
+    ImGui::SliderInt("##volume", &bgm_value, 1, 5, "%i");
+    ImGui::SliderInt("##se_volume", &se_value, 1, 5);
+    ImGui::SliderInt("##skip_type", &skip_type, 0, 2);
+    ImGui::Checkbox("##shake", (bool *)&save::systemData->option_work.shake_type);
+    ImGui::Checkbox("##vibration", (bool *)&save::systemData->option_work.vibe_type);
+    ImGui::SliderInt("##transparency", &window_type, 0, 2);
+    ImGui::Combo("##language", (int *)&save::systemData->option_work.language_type, languages, 2, -1);
+    ImGui::InputInt("##resolution_x", &resolution_h, 0);
+    ImGui::InputInt("##resolution_w", &resolution_w, 0);
+    ImGui::Checkbox("##vsync", (bool *)&save::systemData->option_work.vsync);
+
+    save::systemData->option_work.bgm_value = bgm_value;
+    save::systemData->option_work.se_value = se_value;
+    save::systemData->option_work.skip_type = skip_type;
+    save::systemData->option_work.window_type = window_type;
+    save::systemData->option_work.resolution_h = resolution_h;
+    save::systemData->option_work.resolution_w = resolution_w;
+
+}
+
+void tabs(){
     static int tab = 0;
 
-
-    ImGui::Text("Steam");
     ImGui::SameLine();
     if(ImGui::Button("Save")) save::SaveData();
     ImGui::Separator();
@@ -415,17 +397,32 @@ void Steam(){
     switch (tab) {
         case 0:
             ImGui::Text("Main");
-            // Add content specific to Tab 1 here
 
             if(ImGui::Button("Save")) save::SaveData();
             break;
         case 1:
             ImGui::Text("Scenario");
-            // Add content specific to Tab 2 here
-            Scenarios();
+
+            switch(save::save_type){
+                case save::save_type::Android: scenarios_android();
+                break;
+                case save::save_type::Steam: scenarios_steam();
+                break;
+                default: break;
+            }
             break;
         case 2:
             ImGui::Text("Options");
+
+            switch(save::save_type) {
+                case save::save_type::Android:
+                    options_android();
+                    break;
+                case save::save_type::Steam:
+                    options_steam();
+                    break;
+                default: break;
+            }
             break;
 
         case 3:
@@ -438,35 +435,26 @@ void Steam(){
         default:
             break;
     }
-
-
-/*
-    static const char* items[5]{
-            "Episode 1", "Episode 2", "Episode 3", "Episode 4", "Episode 5"
-    };
-    static int current_gs1 = (int)save::systemData->sce_data.GS1_Scenario_enable / 16 - 1; //sce_data is represented as 0x10 to 0x50 in 0x10 steps
-    static int current_gs2 = (int)save::systemData->sce_data.GS2_Scenario_enable / 16 - 1;
-    static int current_gs3 = (int)save::systemData->sce_data.GS3_Scenario_enable / 16 - 1;
-
-    static const float width = ImGui::GetWindowWidth();
-    static const float combo_width = width * 0.25f;
-    ImGui::SetNextItemWidth(combo_width);
-    ImGui::Combo("##", &current_gs1, items, 5, -1);
-    ImGui::SetNextItemWidth(combo_width);
-    ImGui::SameLine();
-    ImGui::Combo("###", &current_gs2, items, 4, -1);
-    ImGui::SetNextItemWidth(combo_width);
-    ImGui::SameLine();
-    ImGui::Combo("Game progress", &current_gs3, items, 5, -1);
-
-    save::systemData->sce_data.GS1_Scenario_enable = (std::byte)((current_gs1 + 1) * 16);
-    save::systemData->sce_data.GS2_Scenario_enable = (std::byte)((current_gs2 + 1) * 16);
-    save::systemData->sce_data.GS3_Scenario_enable = (std::byte)((current_gs3 + 1) * 16);
-
-    if(ImGui::Button("Save")) save::SaveData();
-
-*/
 }
+
+
+
+
+void Android(){
+    ImGui::Text("Android");
+    tabs();
+}
+
+
+
+
+void Steam(){
+    ImGui::Text("Steam");
+    tabs();
+}
+
+
+
 
 void gui::Render() noexcept
 {

@@ -22,7 +22,7 @@ namespace save{
     };
 
     struct SaveSlotData{
-        SaveData save_data[100];
+        SaveData save_data[100]; //0 - 9 Japanese, 10 - 20 English
     };
 
     struct OpenScenarioData{
